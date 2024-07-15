@@ -1,13 +1,14 @@
-# script.py
-
 import os
 import time
 from instagrapi import Client
-from datetime import datetime
-import pytz
+from datetime import datetime, timedelta
 
-# Carregar credenciais do arquivo de configuração
-from config import USERNAME, PASSWORD
+# Verificação para a biblioteca Pillow
+try:
+    from PIL import Image
+except ImportError:
+    os.system('pip install pillow')
+    from PIL import Image
 
 # Função para agendar a postagem
 def schedule_post(image_path, caption, post_time):
@@ -35,7 +36,10 @@ def post_to_instagram(image_path, caption):
             else:
                 raise e
 
-    login_with_2fa(USERNAME, PASSWORD)
+    username = 'diskchoppnortao'
+    password = 'Diskchopp'
+    
+    login_with_2fa(username, password)
     
     # Poste a imagem
     cl.photo_upload(image_path, caption)
@@ -47,22 +51,17 @@ def read_caption(caption_path):
         caption = file.read()
     return caption
 
-# Obter a data atual no formato 'DD-MM-YY'
+# Construir o caminho da imagem
 current_date = datetime.now().strftime('%d-%m-%y')
-
-# Construir o caminho da pasta da data atual
-current_directory = os.getcwd()
+current_directory = os.getcwd() 
 post_directory = os.path.join(current_directory, 'posts', current_date)
-
-# Caminhos dos arquivos de imagem e caption
 image_path = os.path.join(post_directory, 'post.png')
 caption_path = os.path.join(post_directory, 'caption.txt')
 
-# Ler o caption do arquivo
 caption = read_caption(caption_path)
 
-# Data e hora da postagem (hoje às 12:00)
-post_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
+# Data e hora da postagem 
+post_time = datetime.now()
 
 # Agendar a postagem
 schedule_post(image_path, caption, post_time)
